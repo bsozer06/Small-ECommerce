@@ -30,26 +30,11 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpGet]
-        public async Task Get()
+        public async Task<IActionResult> Get()
         {
-            //var customerId = Guid.NewGuid();
-            //await _customerWriteRepository.AddAsync(new() { Id = customerId, Name="xxxxxx" });
-
-            //await _orderWriteRepository.AddAsync(new() { Description = "aaaa1111", Address = "ankara1", CustomerId=customerId });
-            //await _orderWriteRepository.AddAsync(new() { Description = "aaaa2222", Address = "ankara2", CustomerId = customerId });
-            //await _orderWriteRepository.SaveAsync();
-            var order = await _orderReadRepository.GetByIdAsync("afd2962c-fd80-4541-9d4d-a1504b184ef7");
-            order.Address = "ISTANBUL";
-            await _orderWriteRepository.SaveAsync();
+            var data =  _productReadRepository.GetAll();
+            return Ok(data);
         }
-
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> Get(string id)
-        //{
-        //    Product product = await _productReadRepository.GetByIdAsync(id);
-        //    return Ok(product);
-        //}
-
 
 
     }
