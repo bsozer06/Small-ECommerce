@@ -1,8 +1,11 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { FileSystemDirectoryEntry, FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
+import { FileUploadDialogComponent, FileUploadDialogState } from 'src/app/dialogs/file-upload-dialog/file-upload-dialog.component';
 import { AlertifyService, MessageType, Position } from '../../admin/alertify.service';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from '../../ui/custom-toastr.service';
+import { DialogService } from '../dialog.service';
 import { HttpClientService } from '../http-client.service';
 
 @Component({
@@ -15,7 +18,8 @@ export class FileUploadComponent {
   constructor(
     private httpClientService: HttpClientService,
     private customToastrService: CustomToastrService,
-    private alertifyService: AlertifyService
+    private alertifyService: AlertifyService,
+    private dialogService: DialogService
   ) { }
 
   public files: NgxFileDropEntry[];
@@ -31,44 +35,67 @@ export class FileUploadComponent {
       })
     }
 
-    this.httpClientService.post({
-      controller: this.options.controller,
-      actions: this.options.action,
-      queryString: this.options.queryString,
-      headers: new HttpHeaders({ "responseType": "blob" })
-    }, fileData).subscribe(data => {
-      const message: string = "Files was uploaded successfuly"
-      if (this.options.isAdminPanel) {
-        this.alertifyService.message(message, {
-          dismissOthers: true,
-          messageType: MessageType.Success,
-          position: Position.TopRight
-        })
-      } else {
-        this.customToastrService.message(message, "file upload", {
-          messageType: ToastrMessageType.Success,
-          position: ToastrPosition.TopRight
+    this.dialogService.openDialog({
+      componentType: FileUploadDialogComponent,
+      data: FileUploadDialogState.Yes,
+      afterClosed : () => {
+        this.httpClientService.post({
+          controller: this.options.controller,
+          actions: this.options.action,
+          queryString: this.options.queryString,
+          headers: new HttpHeaders({ "responseType": "blob" })
+        }, fileData).subscribe(data => {
+          const message: string = "Files was uploaded successfuly"
+          if (this.options.isAdminPanel) {
+            this.alertifyService.message(message, {
+              dismissOthers: true,
+              messageType: MessageType.Success,
+              position: Position.TopRight
+            })
+          } else {
+            this.customToastrService.message(message, "file upload", {
+              messageType: ToastrMessageType.Success,
+              position: ToastrPosition.TopRight
+            });
+          }
+        }, (error: HttpErrorResponse) => {
+          const message: string = "Files did not be uploaded"
+          if (this.options.isAdminPanel) {
+            this.alertifyService.message(message, {
+              dismissOthers: true,
+              messageType: MessageType.Error,
+              position: Position.TopRight
+            })
+          } else {
+            this.customToastrService.message(message, "file upload", {
+              messageType: ToastrMessageType.Error,
+              position: ToastrPosition.TopRight
+            })
+          }
         });
       }
-    }, (error: HttpErrorResponse) => {
-      const message: string = "Files did not be uploaded"
-      if (this.options.isAdminPanel) {
-        this.alertifyService.message(message, {
-          dismissOthers: true,
-          messageType: MessageType.Error,
-          position: Position.TopRight
-        })
-      } else {
-        this.customToastrService.message(message, "file upload", {
-          messageType: ToastrMessageType.Error,
-          position: ToastrPosition.TopRight
-        })
-      }
     });
+
+
+
+
   }
 
 
+  // openDialog(afterClosedCallBack?: any): void {
+  //   const dialogRef = this.dialog.open(FileUploadComponent, {
+  //     width: '250px',
+  //     data: FileUploadDialogState.Yes,
+  //   });
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if ( result == FileUploadDialogState.Yes) {
+  //       afterClosedCallBack();
+  //     }
+  //   });
+  // }
+
 }
+
 
 
 export class FileUploadOptions {

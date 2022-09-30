@@ -105,7 +105,7 @@ namespace ECommerceAPI.API.Controllers
             Random random = new ();
             foreach (IFormFile file in Request.Form.Files)
             {
-                var fullPath = Path.Combine(uploadPath, $"{random.Next()}.{Path.GetExtension(file.FileName)}");
+                var fullPath = Path.Combine(uploadPath, $"{random.Next()}{Path.GetExtension(file.FileName)}");
 
                 using (FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024*1024, useAsync: false))
                 {
