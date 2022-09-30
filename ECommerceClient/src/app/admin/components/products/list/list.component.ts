@@ -30,7 +30,7 @@ export class ListComponent extends BaseComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   async getProducts() {
-    this.showSpinner(SpinnerType.BallAtom);
+    //this.showSpinner(SpinnerType.BallAtom);
     const allProducts: Product_Pagination = await this.productService.read(
       this.paginator ? this.paginator.pageIndex : 0,
       this.paginator ? this.paginator.pageSize : 5,
