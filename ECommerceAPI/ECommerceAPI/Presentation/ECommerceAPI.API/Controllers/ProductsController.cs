@@ -45,7 +45,7 @@ namespace ECommerceAPI.API.Controllers
         public async Task<IActionResult> Get([FromQuery] Pagination pagination)
         {
             var totalCount = _productReadRepository.GetAll(false).Count();
-            var products =  _productReadRepository.GetAll(false).Skip(pagination.Size * pagination.Page).Take(pagination.Size).Select(p => new
+            var products = _productReadRepository.GetAll(false).Skip(pagination.Size * pagination.Page).Take(pagination.Size).Select(p => new
             {
                 p.Id,
                 p.Name,
@@ -55,7 +55,8 @@ namespace ECommerceAPI.API.Controllers
                 p.UpdatedDate
             }).ToList();
 
-            return Ok(new {
+            return Ok(new
+            {
                 totalCount,
                 products
             });
@@ -85,7 +86,7 @@ namespace ECommerceAPI.API.Controllers
 
             await _productWriteRepository.SaveAsync();
 
-            return StatusCode((int) HttpStatusCode.Created);
+            return StatusCode((int)HttpStatusCode.Created);
         }
 
 
@@ -110,31 +111,30 @@ namespace ECommerceAPI.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload()
+        public async Task<IActionResult> Upload(string id)
         {
-            //var datas = await _storageService.UploadAsync("resource/files", Request.Form.Files);
-            var datas = await _storageService.UploadAsync("files", Request.Form.Files);
+            var result = await _storageService.UploadAsync("photo-images", Request.Form.Files);
 
-            await _productImageFileWriteRepository.AddRangeAsync(datas.Select(p => new ProductImageFile()
+            var product = await _productReadRepository.GetByIdAsync(id);
+
+            //foreach (var r in result)
+            //{
+            //    product.ProductImageFiles.Add(new()
+            //    {
+            //        FileName = r.fileName,
+            //        Path = r.pathOrContainer,
+            //        Storage = _storageService.StorageName,
+            //        Products = new List<Product>() { product }
+            //    });
+            //}
+
+            await _productImageFileWriteRepository.AddRangeAsync(result.Select(r => new ProductImageFile()
             {
-                FileName = p.fileName,
-                Path = p.pathOrContainer,
-                Storage = _storageService.StorageName
+                FileName = r.fileName,
+                Path = r.pathOrContainer,
+                Storage = _storageService.StorageName,
+                Products = new List<Product>() { product }
             }).ToList());
-
-            //await _invoiceFileWriteRepository.AddRangeAsync(datas.Select(p => new InvoiceFile()
-            //{
-            //    FileName = p.fileName,
-            //    Path = p.path,
-            //    Price = new Random().Next()
-            //}).ToList());
-
-            //await _fileWriteRepository.AddRangeAsync(datas.Select(p => new Domain.Entities.File()
-            //{
-            //    FileName = p.fileName,
-            //    Path = p.path,
-            //}).ToList());
-
 
             await _productImageFileWriteRepository.SaveAsync();
 
