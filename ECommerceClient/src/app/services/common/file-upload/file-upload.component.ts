@@ -2,6 +2,8 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FileSystemDirectoryEntry, FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { SpinnerType } from 'src/app/base/base.component';
 import { FileUploadDialogComponent, FileUploadDialogState } from 'src/app/dialogs/file-upload-dialog/file-upload-dialog.component';
 import { AlertifyService, MessageType, Position } from '../../admin/alertify.service';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from '../../ui/custom-toastr.service';
@@ -19,7 +21,8 @@ export class FileUploadComponent {
     private httpClientService: HttpClientService,
     private customToastrService: CustomToastrService,
     private alertifyService: AlertifyService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private spinner: NgxSpinnerService
   ) { }
 
   public files: NgxFileDropEntry[];
@@ -39,6 +42,7 @@ export class FileUploadComponent {
       componentType: FileUploadDialogComponent,
       data: FileUploadDialogState.Yes,
       afterClosed : () => {
+        this.spinner.show(SpinnerType.BallAtom);
         this.httpClientService.post({
           controller: this.options.controller,
           actions: this.options.action,
@@ -46,6 +50,8 @@ export class FileUploadComponent {
           headers: new HttpHeaders({ "responseType": "blob" })
         }, fileData).subscribe(data => {
           const message: string = "Files was uploaded successfuly"
+          this.spinner.hide(SpinnerType.BallAtom);
+
           if (this.options.isAdminPanel) {
             this.alertifyService.message(message, {
               dismissOthers: true,
@@ -58,7 +64,10 @@ export class FileUploadComponent {
               position: ToastrPosition.TopRight
             });
           }
+
         }, (error: HttpErrorResponse) => {
+          this.spinner.hide(SpinnerType.BallAtom);
+
           const message: string = "Files did not be uploaded"
           if (this.options.isAdminPanel) {
             this.alertifyService.message(message, {
@@ -72,6 +81,7 @@ export class FileUploadComponent {
               position: ToastrPosition.TopRight
             })
           }
+
         });
       }
     });
