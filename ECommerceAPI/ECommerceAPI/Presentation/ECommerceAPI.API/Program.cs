@@ -1,3 +1,4 @@
+using ECommerceAPI.Application;
 using ECommerceAPI.Application.Validators.Products;
 using ECommerceAPI.Infrastructure;
 using ECommerceAPI.Infrastructure.Filters;
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddStorage<ECommerceAPI.Infrastructure.Services.Storage.Local.LocalStorage>();
 //builder.Services.AddStorage<AzureStorage>();
