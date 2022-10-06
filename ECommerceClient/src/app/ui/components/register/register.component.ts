@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { Create_User } from 'src/app/contracts/users/create_user';
 import { User } from 'src/app/entities/user';
+import { UserService } from 'src/app/services/common/models/user.service';
+import { CustomToastrService, ToastrMessageType, ToastrPosition } from 'src/app/services/ui/custom-toastr.service';
 
 @Component({
   selector: 'app-register',
@@ -9,19 +12,23 @@ import { User } from 'src/app/entities/user';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private toastrService: CustomToastrService
+    ) { }
 
   frm: FormGroup;
   submitted: boolean = false;
 
   ngOnInit(): void {
     this.frm = this.formBuilder.group({
-      adSoyad: ["", [
+      nameSurname: ["", [
         Validators.required,
         Validators.maxLength(50),
         Validators.minLength(2)
       ]],
-      kullaniciAdi: ["", [
+      username: ["", [
         Validators.required,
         Validators.maxLength(50),
         Validators.minLength(2)
@@ -31,20 +38,16 @@ export class RegisterComponent implements OnInit {
         Validators.maxLength(150),
         Validators.email
       ]],
-      sifre: ["", [
+      password: ["", [
         Validators.required,
-        // Validators.maxLength(50),
-        // Validators.minLength(2)
       ]],
-      sifreTekrar: ["", [
+      passwordConfirm: ["", [
         Validators.required,
-        // Validators.maxLength(50),
-        // Validators.minLength(2)
       ]],
     }, {
       validators: (group: AbstractControl): ValidationErrors | null => {
-        let sifre = group.get("sifre").value;
-        let sifreTekrar = group.get("sifreTekrar").value;
+        let sifre = group.get("password").value;
+        let sifreTekrar = group.get("passwordConfirm").value;
         return sifre === sifreTekrar ? null : { notSame: true };
       }
     })
@@ -55,11 +58,25 @@ export class RegisterComponent implements OnInit {
     return this.frm.controls;
   }
 
-  onSubmit(data: User) {
+ async onSubmit(user: User) {
     this.submitted = true;
     if (this.frm.invalid)
       return;
-    // console.log(data)
+    console.log(user)
+
+    const result: Create_User = await this.userService.create(user);
+    if (result.succedded){
+      this.toastrService.message(result.message, "User registration", {
+        messageType: ToastrMessageType.Success,
+        position: ToastrPosition.TopRight
+      });
+    } else {
+      this.toastrService.message(result.message, "User registration", {
+        messageType: ToastrMessageType.Error,
+        position: ToastrPosition.TopRight
+      });
+    }
+
   }
 
 }

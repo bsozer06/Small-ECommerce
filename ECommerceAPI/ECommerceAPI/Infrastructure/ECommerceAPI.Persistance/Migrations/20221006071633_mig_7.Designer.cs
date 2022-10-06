@@ -3,6 +3,7 @@ using System;
 using ECommerceAPI.Persistance.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ECommerceAPI.Persistance.Migrations
 {
     [DbContext(typeof(ECommerceAPIDbContext))]
-    partial class ECommerceAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221006071633_mig_7")]
+    partial class mig_7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,7 +128,7 @@ namespace ECommerceAPI.Persistance.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("NameSurname")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -148,6 +150,10 @@ namespace ECommerceAPI.Persistance.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SurName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
