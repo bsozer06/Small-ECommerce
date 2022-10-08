@@ -37,10 +37,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new()
         {
-            ValidateAudience = true, //Olusturulacak token degerini kimlerin/hangi originlerin/sitelerin kullanici belirledigimiz degerdir. -> www.bilmemne.com
-            ValidateIssuer = true, //Olusturulacak token degerini kimin dagittigi ifade edecegimiz alandir. -> www.myapi.com
-            ValidateLifetime = true, //Olusturulan token degerini süresini kontrol edecek olan dogrulamadir.
-            ValidateIssuerSigningKey = true, //Üretilecek token degerinin ugulamamiza ait bir deger oldugunu ifade eden secury key verisinin dogrulanmasidir.
+            ValidateAudience = true, // Olusturulacak token degerini kimlerin/hangi originlerin/sitelerin kullanici belirledigimiz degerdir. -> www.bilmemne.com
+            ValidateIssuer = true, // Olusturulacak token degerini kimin dagittigi ifade edecegimiz alandir. -> www.myapi.com
+            ValidateLifetime = true, // Olusturulan token degerini süresini kontrol edecek olan dogrulamadir.
+            ValidateIssuerSigningKey = true, // Üretilecek token degerinin ugulamamiza ait bir deger oldugunu ifade eden secury key verisinin dogrulanmasidir.
 
             ValidAudience = builder.Configuration["Token:Audience"],
             ValidIssuer = builder.Configuration["Token:Issuer"],

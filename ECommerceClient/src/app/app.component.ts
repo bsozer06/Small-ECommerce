@@ -13,10 +13,7 @@ export class AppComponent {
   constructor(public authService: AuthService,
      private toastrService: CustomToastrService,
      private router: Router
-     ) {
-    authService.identityCheck();
-
-  }
+     ) { authService.identityCheck(); }
 
   signOut() {
     localStorage.removeItem("accessToken");

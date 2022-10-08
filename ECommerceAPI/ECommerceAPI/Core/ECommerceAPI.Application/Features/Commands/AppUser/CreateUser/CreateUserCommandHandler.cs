@@ -1,5 +1,4 @@
-﻿using ECommerceAPI.Application.Exceptions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using U = ECommerceAPI.Domain.Entities.Identity;
 

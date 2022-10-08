@@ -67,7 +67,7 @@ export class RegisterComponent extends BaseComponent implements OnInit {
     this.submitted = true;
     if (this.frm.invalid)
       return;
-    console.log(user)
+    //console.log(user)
 
     const result: Create_User = await this.userService.create(user);
     if (result.succedded){
