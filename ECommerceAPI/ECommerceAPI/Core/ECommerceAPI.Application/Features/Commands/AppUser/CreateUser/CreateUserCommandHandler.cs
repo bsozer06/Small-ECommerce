@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using ECommerceAPI.Application.Abstractions.Services;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using U = ECommerceAPI.Domain.Entities.Identity;
 
@@ -6,39 +7,31 @@ namespace ECommerceAPI.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        private readonly UserManager<U.AppUser> _userManager;
+        private readonly IUserService _userService;
 
-        public CreateUserCommandHandler(UserManager<U.AppUser> userManager)
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            var result = await _userManager.CreateAsync(new()
+            var response = await _userService.CreateAsync(new()
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = request.Username,
                 Email = request.Email,
-                NameSurname = request.NameSurname
-            }, request.Password);
+                NameSurname = request.NameSurname,
+                Password = request.Password,
+                PasswordConfirm = request.PasswordConfirm,
+                Username = request.Username,
+            });
 
-            CreateUserCommandResponse response = new() { Succeeded = result.Succeeded };
-
-            if (result.Succeeded)
+            return new()
             {
-                response.Message = "User has been created successfuly!!";
-            }
-            else
-            {
-                foreach (var error in result.Errors)
-                {
-                    response.Message += $"{error.Code}-{error.Description}\n";
-                }
-            }
-
-            return response;
-
+                Message = response.Message,
+                Succeeded = response.Succeeded
+            };
         }
+
+
     }
 }

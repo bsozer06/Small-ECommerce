@@ -24,63 +24,6 @@ export class UserService {
     return await firstValueFrom(observeble) as Create_User;
   }
 
-  async login(userNameOrEmail: string, password: string, callBackFunction?: () => void): Promise<any> {
-    const observable: Observable<any | TokenResponse> = this.httpClientService.post<any | TokenResponse>({
-      controller: "users",
-      actions: "login"
-    }, { userNameOrEmail, password })
 
-    const tokenResponse: TokenResponse = await firstValueFrom(observable) as TokenResponse;
-    if (tokenResponse) {
-      localStorage.setItem("accessToken", tokenResponse.token.accessToken);
-      // localStorage.setItem("expiration", token.expiration.toString());
-
-      this.toastrService.message("Login is successfull", "Success", {
-        messageType: ToastrMessageType.Success,
-        position: ToastrPosition.TopRight
-      });
-    }
-
-    callBackFunction();
-  }
-
-  async googleLogin(user: SocialUser, callBackFunction?: () => void): Promise<any> {
-    const observeble: Observable<SocialUser | TokenResponse> = this.httpClientService.post<SocialUser | TokenResponse>({
-      actions: "google-login",
-      controller: "users"
-    }, user);
-
-    const tokenResponse = await firstValueFrom(observeble) as TokenResponse;
-
-    if (tokenResponse)
-      localStorage.setItem("accessToken", tokenResponse.token.accessToken);
-
-    this.toastrService.message("Entering is successful by Google account.", "Google account", {
-      messageType: ToastrMessageType.Success,
-      position: ToastrPosition.TopRight
-    });
-    callBackFunction();
-  }
-
-
-  async facebookLogin(user: SocialUser, callBackFunction?: () => void): Promise<any> {
-    const observable: Observable<SocialUser | TokenResponse> = this.httpClientService.post<SocialUser | TokenResponse>({
-      controller: "users",
-      actions: "facebook-login"
-    }, user);
-
-    const tokenResponse: TokenResponse = await firstValueFrom(observable) as TokenResponse;
-
-    if (tokenResponse) {
-      localStorage.setItem("accessToken", tokenResponse.token.accessToken);
-
-      this.toastrService.message("Facebook üzerinden giriş başarıyla sağlanmıştır.", "Giriş Başarılı", {
-        messageType: ToastrMessageType.Success,
-        position: ToastrPosition.TopRight
-      })
-    }
-
-    callBackFunction();
-  }
 
 }
