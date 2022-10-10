@@ -10,8 +10,7 @@ import { HttpClientService } from '../http-client.service';
 })
 export class UserAuthService {
 
-  constructor(private httpClientService: HttpClientService,private toastrService: CustomToastrService)
-  { }
+  constructor(private httpClientService: HttpClientService, private toastrService: CustomToastrService) { }
 
   async login(userNameOrEmail: string, password: string, callBackFunction?: () => void): Promise<any> {
     const observable: Observable<any | TokenResponse> = this.httpClientService.post<any | TokenResponse>({
@@ -22,12 +21,29 @@ export class UserAuthService {
     const tokenResponse: TokenResponse = await firstValueFrom(observable) as TokenResponse;
     if (tokenResponse) {
       localStorage.setItem("accessToken", tokenResponse.token.accessToken);
+      localStorage.setItem("refreshToken", tokenResponse.token.refreshToken);
       // localStorage.setItem("expiration", token.expiration.toString());
 
       this.toastrService.message("Login is successfull", "Success", {
         messageType: ToastrMessageType.Success,
         position: ToastrPosition.TopRight
       });
+    }
+
+    callBackFunction();
+  }
+
+  async refreshTokenLogin(refreshToken: string, callBackFunction?: () => void): Promise<any> {
+    const observable: Observable<any> = await this.httpClientService.post({
+      actions: "refreshTokenLogin",
+      controller: "auth"
+    }, { refreshToken: refreshToken });
+
+    const tokenResponse: TokenResponse = await firstValueFrom(observable) as TokenResponse;
+
+    if (tokenResponse) {
+      localStorage.setItem("accessToken", tokenResponse.token.accessToken);
+      localStorage.setItem("refreshToken", tokenResponse.token.refreshToken);
     }
 
     callBackFunction();
@@ -41,8 +57,10 @@ export class UserAuthService {
 
     const tokenResponse = await firstValueFrom(observeble) as TokenResponse;
 
-    if (tokenResponse)
+    if (tokenResponse) {
       localStorage.setItem("accessToken", tokenResponse.token.accessToken);
+      localStorage.setItem("refreshToken", tokenResponse.token.refreshToken);
+    }
 
     this.toastrService.message("Entering is successful by Google account.", "Google account", {
       messageType: ToastrMessageType.Success,
@@ -61,6 +79,7 @@ export class UserAuthService {
 
     if (tokenResponse) {
       localStorage.setItem("accessToken", tokenResponse.token.accessToken);
+      localStorage.setItem("refreshToken", tokenResponse.token.refreshToken);
 
       this.toastrService.message("Facebook üzerinden giriş başarıyla sağlanmıştır.", "Giriş Başarılı", {
         messageType: ToastrMessageType.Success,
