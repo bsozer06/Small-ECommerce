@@ -1,19 +1,22 @@
 ﻿using ECommerceAPI.Application.Repositories;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerceAPI.Application.Features.Commands.Product.UpdateProduct
 {
-    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandRequest, UpdateProductCommandResponse>   
+    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandRequest, UpdateProductCommandResponse>
     {
         readonly IProductReadRepository _productReadRepository;
         readonly IProductWriteRepository _productWriteRepository;
-
+        private readonly ILogger<UpdateProductCommandHandler> _logger;
         public UpdateProductCommandHandler(
-            IProductReadRepository productReadRepository, 
-            IProductWriteRepository productWriteRepository)
+            IProductReadRepository productReadRepository,
+            IProductWriteRepository productWriteRepository,
+            ILogger<UpdateProductCommandHandler> logger)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
+            _logger = logger;
         }
 
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
@@ -23,6 +26,10 @@ namespace ECommerceAPI.Application.Features.Commands.Product.UpdateProduct
             product.Name = request.Name;
             product.Price = request.Price;
             await _productWriteRepository.SaveAsync();
+            
+            // for testing 
+            _logger.LogInformation("updating is successful...");
+
             return new();
         }
     }
