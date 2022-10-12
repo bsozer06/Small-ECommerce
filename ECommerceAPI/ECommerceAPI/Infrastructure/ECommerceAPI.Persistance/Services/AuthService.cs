@@ -57,7 +57,7 @@ namespace ECommerceAPI.Persistance.Services
 
                 // token üretmilme yeri !
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime, user);
-                await _userService.UpdateResfreshToken(token.RefreshToken, user, token.Expiration, 15);
+                await _userService.UpdateResfreshToken(token.RefreshToken, user, token.Expiration, 300);
                 return token;
             }
 

@@ -1,9 +1,11 @@
-﻿using ECommerceAPI.Application;
+﻿using ECommerceAPI.API.Extensions;
+using ECommerceAPI.Application;
 using ECommerceAPI.Application.Validators.Products;
 using ECommerceAPI.Infrastructure;
 using ECommerceAPI.Infrastructure.Filters;
 using ECommerceAPI.Infrastructure.Services.Storage.Azure;
 using ECommerceAPI.Persistance;
+using ECommerceAPI.SignalR;
 using ETicaretAPI.API.Configurations.ColumnWriters;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddSignalRServices();
 
 builder.Services.AddStorage<ECommerceAPI.Infrastructure.Services.Storage.Local.LocalStorage>();
 //builder.Services.AddStorage<AzureStorage>();
@@ -31,6 +34,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
         .WithOrigins("http://localhost:4200", "https://localhost:4200")
         .AllowAnyHeader()
         .AllowAnyMethod()
+        .AllowCredentials()
 ));
 
 #region Serilog
@@ -103,6 +107,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
+
 // wwwroot dosyasının kullanımı için
 app.UseStaticFiles();
 
@@ -124,5 +130,7 @@ app.Use(async (context, next) =>
 });
 
 app.MapControllers();
+
+app.MapHubs();
 
 app.Run();
