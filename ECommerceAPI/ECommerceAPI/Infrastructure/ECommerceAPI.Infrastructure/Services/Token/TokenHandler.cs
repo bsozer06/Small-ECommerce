@@ -11,15 +11,14 @@ namespace ECommerceAPI.Infrastructure.Services.Token
 {
     public class TokenHandler : ITokenHandler
     {
-        private readonly IConfiguration _configuration;
+        readonly IConfiguration _configuration;
 
         public TokenHandler(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-
-        public Application.Dtos.Token CreateAccessToken(int second, AppUser appUser)
+        public Application.Dtos.Token CreateAccessToken(int second, AppUser user)
         {
             Application.Dtos.Token token = new();
 
@@ -37,12 +36,15 @@ namespace ECommerceAPI.Infrastructure.Services.Token
                 expires: token.Expiration,
                 notBefore: DateTime.UtcNow,
                 signingCredentials: signingCredentials,
-                claims: new List<Claim> { new (ClaimTypes.Name, appUser.UserName) }
+                claims: new List<Claim> { new(ClaimTypes.Name, user.UserName) }
                 );
 
             //Token oluşturucu sınıfından bir örnek alalım.
             JwtSecurityTokenHandler tokenHandler = new();
             token.AccessToken = tokenHandler.WriteToken(securityToken);
+
+            //string refreshToken = CreateRefreshToken();
+
             token.RefreshToken = CreateRefreshToken();
             return token;
         }
@@ -50,7 +52,7 @@ namespace ECommerceAPI.Infrastructure.Services.Token
         public string CreateRefreshToken()
         {
             byte[] number = new byte[32];
-            using var random = RandomNumberGenerator.Create();
+            using RandomNumberGenerator random = RandomNumberGenerator.Create();
             random.GetBytes(number);
             return Convert.ToBase64String(number);
         }

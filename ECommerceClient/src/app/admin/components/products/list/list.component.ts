@@ -43,7 +43,7 @@ export class ListComponent extends BaseComponent implements OnInit {
         position: Position.TopRight
       }))
     this.dataSource = new MatTableDataSource<List_Product>(allProducts.products);
-    this.paginator.length = allProducts.totalCount;
+    this.paginator.length = allProducts.totalProductCount;
   }
 
   addProductImages(id: string) {

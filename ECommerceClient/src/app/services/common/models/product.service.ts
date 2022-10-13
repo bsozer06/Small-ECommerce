@@ -53,7 +53,7 @@ export class ProductService {
 
   async readImages(id: string, successCallBack?: () => void): Promise<List_Product_Image[]> {
     const getObservable: Observable<List_Product_Image[]> = this.httpClientService.get<List_Product_Image[]>({
-      actions:"getProductImages",
+      actions: "getProductImages",
       controller: "product"
     }, id)
 
@@ -63,12 +63,23 @@ export class ProductService {
   }
 
   async deleteImages(id: string, imageId: string, successCallBack?: () => void) {
-    const deleteObservable =  this.httpClientService.delete({
-      actions:"deleteProductImage",
+    const deleteObservable = this.httpClientService.delete({
+      actions: "deleteProductImage",
       controller: "products",
       queryString: `imageId=${imageId}`
     }, id);
     await firstValueFrom(deleteObservable);
+    successCallBack();
+  }
+
+  async changeShowcase(imageId: string, productId: string, successCallBack?: () => void) {
+    const observable = this.httpClientService.get({
+      controller: "products",
+      actions: "ChangeShowCase",
+      queryString: `imageId=${imageId}&productId=${productId}`
+    });
+
+    await firstValueFrom(observable);
     successCallBack();
   }
 

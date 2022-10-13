@@ -122,6 +122,7 @@ app.UseHttpLogging();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Serilog db tablosuna kullanıcı bilgileirni middleware üzeirnden eklenmesi !!!
 app.Use(async (context, next) =>
 {
     var username = context.User?.Identity?.IsAuthenticated != null || true ? context.User.Identity.Name : null;

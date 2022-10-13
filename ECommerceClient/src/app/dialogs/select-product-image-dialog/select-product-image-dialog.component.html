@@ -4,14 +4,17 @@
 
   <mat-card class="product-image-card" *ngFor="let image of images">
     <mat-card-header>
-
+      <input type="radio" name="img" (click)="showCase(image.id)" [(ngModel)]="image.showcase">
     </mat-card-header>
-    <img mat-card-image [src]="image.path">
-    <mat-card-content>
 
+    <img mat-card-image [src]="image.path">
+
+    <mat-card-content>
     </mat-card-content>
+
     <mat-card-actions>
-      <button mat-button style="background-color:rgb(224, 41, 13);color:wheat;" (click)="deleteImage(image.id, $event)">DELETE</button>
+      <button mat-button style="background-color:rgb(224, 41, 13);color:wheat;"
+        (click)="deleteImage(image.id, $event)">DELETE</button>
     </mat-card-actions>
   </mat-card>
 
