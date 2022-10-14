@@ -21,6 +21,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Client'dan gelen request neticesinde olusturulan HttpContext nesenesini katmanlardaki class'lar uzeirnden
+// businesslogic erişebilmemizi sağlayan bir serbvistir.
+builder.Services.AddHttpContextAccessor();    
+
 builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
