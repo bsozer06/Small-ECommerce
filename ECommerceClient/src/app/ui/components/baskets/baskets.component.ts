@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
+import { List_Basket_Item } from 'src/app/contracts/basket/list-basket-item';
+import { Update_Basket_Item } from 'src/app/contracts/basket/update_basket_item';
+import { BasketService } from 'src/app/services/common/models/basket.service';
+
+declare var $: any;
 
 @Component({
   selector: 'app-baskets',
@@ -9,12 +14,46 @@ import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
 })
 export class BasketsComponent extends BaseComponent implements OnInit {
 
-  constructor(spinner: NgxSpinnerService) {
+  constructor(
+    spinner: NgxSpinnerService,
+    private basketService: BasketService
+  ) {
     super(spinner);
-   }
+  }
 
-  ngOnInit(): void {
-    // this.showSpinner(SpinnerType.BallAtom);
+  basketItems: List_Basket_Item[];
+
+  async ngOnInit(): Promise<void> {
+    this.showSpinner(SpinnerType.BallAtom)
+    this.basketItems = await this.basketService.get();
+    this.hideSpinner(SpinnerType.BallAtom)
+  }
+
+  changeQuantity(el: any) {
+    this.showSpinner(SpinnerType.BallAtom)
+
+    // data-id attribtues yakalama !
+    const basketItemId: string = el.target.attributes["id"].value;
+    const quantity: number = el.target.value;
+    const basketItem: Update_Basket_Item = new Update_Basket_Item();
+    basketItem.basketItemId = basketItemId;
+    basketItem.quantity = quantity;
+    this.basketService.updateQuantity(basketItem);
+
+    this.hideSpinner(SpinnerType.BallAtom)
+  }
+
+  async removeBasketItem(basketItemId: string) {
+    this.showSpinner(SpinnerType.BallAtom)
+
+    await this.basketService.remove(basketItemId);
+
+    $("."+ basketItemId).fadeOut(500, () => {
+      this.hideSpinner(SpinnerType.BallAtom)
+    });
+
+
+
   }
 
 }

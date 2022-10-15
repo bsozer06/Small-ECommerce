@@ -1,6 +1,9 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { catchError, Observable, of } from 'rxjs';
+import { SpinnerType } from 'src/app/base/base.component';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from '../ui/custom-toastr.service';
 import { UserAuthService } from './models/user-auth.service';
 
@@ -9,7 +12,13 @@ import { UserAuthService } from './models/user-auth.service';
 })
 export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
 
-  constructor(private toastrService: CustomToastrService, private userAuthService: UserAuthService) { }
+  constructor(
+    private toastrService: CustomToastrService,
+    private userAuthService: UserAuthService,
+    private router: Router,
+    private spinner: NgxSpinnerService
+  ) {
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     console.log("inteceptor");
@@ -17,11 +26,24 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
       console.log("inteceptor", error);
       switch (error.status) {
         case HttpStatusCode.Unauthorized:
-          this.toastrService.message("you are not authorized !!", "Unauthorized", {
-            messageType: ToastrMessageType.Warning,
-            position: ToastrPosition.BottomFullWidth
-          });
-          this.userAuthService.refreshTokenLogin(localStorage.getItem("refreshToken")).then(data => {
+
+
+          this.userAuthService.refreshTokenLogin(localStorage.getItem("refreshToken"), (state) => {
+            if (!state) {
+              const url = this.router.url;
+              if (url == "/products") {
+                this.toastrService.message("you should enter your account !!", "Unauthorized", {
+                  messageType: ToastrMessageType.Warning,
+                  position: ToastrPosition.TopRight
+                });
+              } else {
+                this.toastrService.message("you are not authorized !!", "Unauthorized", {
+                  messageType: ToastrMessageType.Warning,
+                  position: ToastrPosition.BottomFullWidth
+                });
+              }
+            }
+          }).then(data => {
 
           });
           break;
@@ -50,6 +72,8 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
           });
           break;
       }
+
+      this.spinner.hide(SpinnerType.BallAtom);
       return of(error);
     }))
   }
