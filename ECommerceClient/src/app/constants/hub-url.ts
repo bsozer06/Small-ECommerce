@@ -1,3 +1,4 @@
 export enum HubUrls {
-  ProductUrl = "https://localhost:7008/products-hub"
+  ProductHub = "products-hub",
+  OrderHub = "orders-hub"
 }

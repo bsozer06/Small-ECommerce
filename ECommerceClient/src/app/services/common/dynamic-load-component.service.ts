@@ -11,7 +11,8 @@ export class DynamicLoadComponentService {
 
 
   constructor(
-    private componentFactoryResolver: ComponentFactoryResolver) { }
+    // private componentFactoryResolver: ComponentFactoryResolver     // deprecated !!
+    ) { }
 
   async loadComponent(component: ComponentType, viewContainerRef: ViewContainerRef) {
     let _component: any = null;
@@ -24,7 +25,9 @@ export class DynamicLoadComponentService {
     }
 
     viewContainerRef.clear();
-    return viewContainerRef.createComponent(this.componentFactoryResolver.resolveComponentFactory(_component));
+    // deprecated !!
+    // return viewContainerRef.createComponent(this.componentFactoryResolver.resolveComponentFactory(_component));
+    return viewContainerRef.createComponent(_component);
 
   }
 
