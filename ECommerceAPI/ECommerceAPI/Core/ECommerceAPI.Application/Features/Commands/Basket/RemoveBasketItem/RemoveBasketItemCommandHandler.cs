@@ -14,7 +14,7 @@ namespace ECommerceAPI.Application.Features.Commands.Basket.RemoveBasketItem
 
         public async Task<RemoveBasketItemCommandResponse> Handle(RemoveBasketItemCommandRequest request, CancellationToken cancellationToken)
         {
-            await _basketService.RemoveBasketItemAsync(request.BasketItemId);
+            await _basketService.RemoveBasketItemsAsync(request.BasketItemId);
             return new();
         }
     }

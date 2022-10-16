@@ -19,7 +19,7 @@ namespace ECommerceAPI.Persistance.Services
         private readonly IBasketItemWriteRepository _basketItemWriteRepository;
         private readonly IBasketItemReadRepository _basketItemReadRepository;
 
-        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderReadRepository orderReadRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketReadRepository basketReadRepository)
+        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderReadRepository orderReadRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketReadRepository basketReadRepository, IBasketWriteRepository basketWriteRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
@@ -27,6 +27,7 @@ namespace ECommerceAPI.Persistance.Services
             _basketItemWriteRepository = basketItemWriteRepository;
             _basketItemReadRepository = basketItemReadRepository;
             _basketReadRepository = basketReadRepository;
+            _basketWriteRepository = basketWriteRepository;
         }
 
         private async Task<Basket?> ContextUser()
