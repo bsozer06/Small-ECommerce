@@ -32,6 +32,10 @@ namespace ECommerceAPI.Persistance.Contexts
                 .WithOne(o => o.Basket)
                 .HasForeignKey<Order>(b => b.Id);
 
+            builder.Entity<Order>()
+                .HasIndex(b => b.OrderCode)
+                .IsUnique();
+
             base.OnModelCreating(builder);
         }
 
