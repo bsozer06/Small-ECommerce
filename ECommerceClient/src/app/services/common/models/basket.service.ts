@@ -12,34 +12,33 @@ export class BasketService {
 
   constructor(private httpClientService: HttpClientService) { }
 
-  async get() : Promise<List_Basket_Item[]> {
-  const observeble: Observable<List_Basket_Item[]> = this.httpClientService.get({
-    controller: "baskets"
-  });
-  return await firstValueFrom(observeble);
-}
+  async get(): Promise<List_Basket_Item[]> {
+    const observeble: Observable<List_Basket_Item[]> = this.httpClientService.get({
+      controller: "baskets"
+    });
+    return await firstValueFrom(observeble);
+  }
 
-
-async add(basketItem: Create_Basket_Item) : Promise<void> {
- const observeble: Observable<any> = this.httpClientService.post({
-    controller: "baskets"
-  }, basketItem);
-   await firstValueFrom(observeble);
-}
-
-async updateQuantity(basketItem: Update_Basket_Item) : Promise<void> {
-  const observeble: Observable<any> = this.httpClientService.put({
-     controller: "baskets"
-   }, basketItem);
+  async add(basketItem: Create_Basket_Item): Promise<void> {
+    const observeble: Observable<any> = this.httpClientService.post({
+      controller: "baskets"
+    }, basketItem);
     await firstValueFrom(observeble);
- }
+  }
 
-
- async remove(basketItemId: string) : Promise<void> {
-  const observeble: Observable<any> = this.httpClientService.delete({
-     controller: "baskets"
-   }, basketItemId);
+  async updateQuantity(basketItem: Update_Basket_Item): Promise<void> {
+    const observeble: Observable<any> = this.httpClientService.put({
+      controller: "baskets"
+    }, basketItem);
     await firstValueFrom(observeble);
- }
+  }
+
+
+  async remove(basketItemId: string): Promise<void> {
+    const observeble: Observable<any> = this.httpClientService.delete({
+      controller: "baskets"
+    }, basketItemId);
+    await firstValueFrom(observeble);
+  }
 
 }
