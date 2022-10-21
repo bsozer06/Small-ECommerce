@@ -1,8 +1,11 @@
 ﻿using ECommerceAPI.Application.Abstractions.Services;
 using ECommerceAPI.Application.Dtos.User;
 using ECommerceAPI.Application.Exceptions;
+using ECommerceAPI.Application.Helpers;
 using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 
 namespace ECommerceAPI.Persistance.Services
 {
@@ -42,7 +45,8 @@ namespace ECommerceAPI.Persistance.Services
             return response;
         }
 
-        public async Task UpdateResfreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate)
+
+        public async Task UpdateResfreshTokenAsync(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate)
         {
             if (user != null)
             {
@@ -54,5 +58,23 @@ namespace ECommerceAPI.Persistance.Services
                 throw new NotFoundUserException();
 
         }
+
+
+        public async Task UpdatePasswordAsync(string userId, string resetToken, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                resetToken = resetToken.UrlDecode();
+                
+                IdentityResult result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+
+                if (result.Succeeded)
+                    await _userManager.UpdateSecurityStampAsync(user);                          // security stamp ezilir. !
+                else
+                    throw new PasswordChangeFailedException();
+            }
+        }
+
     }
 }

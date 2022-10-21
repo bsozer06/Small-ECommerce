@@ -17,13 +17,31 @@ export class UserService {
     private toastrService: CustomToastrService) { }
 
   async create(user: User): Promise<Create_User> {
-    const observeble = this.httpClientService.post<Create_User | User>({
+    const observable = this.httpClientService.post<Create_User | User>({
       controller: "users"
     }, user)
 
-    return await firstValueFrom(observeble) as Create_User;
+    return await firstValueFrom(observable) as Create_User;
   }
 
+  async updatePassword(userId: string, resetToken: string, password: string, passwordConfirm: string, successCallback?: () => void, errorCallback?: (error) => void): Promise<any> {
+    const observable = this.httpClientService.post<any>({
+      controller: "users",
+      actions: "update-password"
+    }, {
+      userId: userId,
+      resetToken: resetToken,
+      password: password,
+      passwordConfirm: passwordConfirm
+    });
+
+    const promiseData: Promise<any> = firstValueFrom(observable);
+    promiseData
+      .then(value => successCallback())
+      .catch(error => errorCallback(error));
+
+    await promiseData;
+  }
 
 
 }
