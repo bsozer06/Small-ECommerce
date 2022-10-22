@@ -20,6 +20,7 @@ namespace ECommerceAPI.Persistance.Contexts
         public DbSet<ProductImageFile> ProductImageFiles { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
+        public DbSet<CompletedOrder> CompletedOrders { get; set; }
 
         // to define constraint 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -35,6 +36,12 @@ namespace ECommerceAPI.Persistance.Contexts
             builder.Entity<Order>()
                 .HasIndex(b => b.OrderCode)
                 .IsUnique();
+
+            builder.Entity<Order>()
+                .HasOne(o => o.CompletedOrder)
+                .WithOne(c => c.Order)
+                .HasForeignKey<CompletedOrder>(c => c.OrderId);
+                
 
             base.OnModelCreating(builder);
         }
