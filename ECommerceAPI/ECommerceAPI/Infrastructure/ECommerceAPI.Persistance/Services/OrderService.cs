@@ -115,17 +115,28 @@ namespace ECommerceAPI.Persistance.Services
             };
         }
 
-        public async Task CompleteOrderAsync(string id)
+        public async Task<(bool, CompletedOrderDto)> CompleteOrderAsync(string id)
         {
-            var order = await _orderReadRepository.GetByIdAsync(id);
+            //var order = await _orderReadRepository.GetByIdAsync(id);
+            var order = await _orderReadRepository.Table
+                .Include(o => o.Basket)
+                .ThenInclude(b => b.User)
+                .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+
+
             if (order != null)
             {
-                await _completedOrderWriteRepository.AddAsync(new()
+                await _completedOrderWriteRepository.AddAsync(new() { OrderId = Guid.Parse(id) });
+                return (await _completedOrderWriteRepository.SaveAsync() > 0, new() 
                 {
-                    OrderId = Guid.Parse(id),
+                    OrderCode = order.OrderCode,
+                    OrderDate = order.CreatedDate,
+                    Username = order.Basket.User.UserName,
+                    //UserSurname = order.Basket.User.UserName,
+                    EMail = order.Basket.User.Email,
                 });
-                await _completedOrderWriteRepository.SaveAsync();
             }
+            return (false, null);
         }
     }
 }
