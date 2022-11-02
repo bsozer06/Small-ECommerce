@@ -24,7 +24,7 @@ namespace ECommerceAPI.Application.Features.Commands.Order.CompleteOrder
                     dto.EMail,
                     dto.OrderCode,
                     dto.OrderDate,
-                    dto.Username,
+                    dto.Username
                     );
             return new ();
         }
