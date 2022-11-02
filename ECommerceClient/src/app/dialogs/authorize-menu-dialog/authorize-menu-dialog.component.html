@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>{{data.name}} | Role Assignment</h1>
+<div mat-dialog-content>
+  <p>You can add the roles below </p>
+</div>
+<div matBadge="4" matBadgeOverlap="false"></div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Yes</button>
+</div>
