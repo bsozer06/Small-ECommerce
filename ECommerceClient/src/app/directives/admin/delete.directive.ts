@@ -55,7 +55,7 @@ export class DeleteDirective {
             height:"toogle"
           }, 700, () => {
               this.callbackForDirective.emit();
-              this.alertifyService.message("Delete operation done successfully", {
+              this.alertifyService.message(`${this.controller == 'roles' ? "Role" : "Product"} operation done successfully`, {
                 dismissOthers: true,
                 messageType: MessageType.Success,
                 position: Position.TopRight
