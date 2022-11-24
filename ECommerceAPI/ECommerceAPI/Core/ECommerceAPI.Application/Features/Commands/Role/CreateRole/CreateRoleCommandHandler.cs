@@ -10,7 +10,7 @@ namespace ECommerceAPI.Application.Features.Commands.Role.CreateRole
         public CreateRoleCommandHandler(IRoleService roleService)
         {
             _roleService = roleService;
-        }
+            }
 
         public async Task<CreateRoleCommandResponse> Handle(CreateRoleCommandRequest request, CancellationToken cancellationToken)
         {

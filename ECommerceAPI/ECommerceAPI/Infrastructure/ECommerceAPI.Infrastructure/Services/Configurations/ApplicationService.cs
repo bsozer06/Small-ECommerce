@@ -9,6 +9,9 @@ using System.Reflection;
 
 namespace ECommerceAPI.Infrastructure.Services.Configurations
 {
+    /// <summary>
+    /// Reflaction was applied !
+    /// </summary>
     public class ApplicationService : IApplicationService
     {
         public List<Menu> GetAuthorizeDefinitionEndpoints(Type type)

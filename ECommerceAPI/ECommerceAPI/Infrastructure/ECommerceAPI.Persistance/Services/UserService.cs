@@ -5,15 +5,18 @@ using ECommerceAPI.Application.Helpers;
 using ECommerceAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 
 namespace ECommerceAPI.Persistance.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public UserService(UserManager<Domain.Entities.Identity.AppUser> userManager)
+        public int TotalUsersCount => _userManager.Users.Count();
+
+        public UserService(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
         }
@@ -75,6 +78,43 @@ namespace ECommerceAPI.Persistance.Services
                     throw new PasswordChangeFailedException();
             }
         }
+
+        public async Task<List<ListUser>> GetAllUsersAsync(int page, int size)
+        {
+            var users = await _userManager.Users.Skip(page * size).Take(size).ToListAsync();
+            return users.Select(user => new ListUser
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                NameSurname = user.NameSurname
+            }).ToList();
+        }
+
+        public async Task AssignRoleToUserAsync(string userId, string[] roles)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, userRoles);
+                await _userManager.AddToRolesAsync(user, roles);
+
+            }
+        }
+
+        public async Task<string[]> GetRolesToUserAsync(string userId)
+        {
+            AppUser user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+                return userRoles.ToArray();
+            }
+            return new string[] {};    
+        }
+
 
     }
 }

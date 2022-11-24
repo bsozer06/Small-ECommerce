@@ -21,6 +21,9 @@ namespace ECommerceAPI.Persistance.Contexts
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<BasketItem> BasketItems { get; set; }
         public DbSet<CompletedOrder> CompletedOrders { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<Endpoint> Endpoints { get; set; }
+
 
         // to define constraint 
         protected override void OnModelCreating(ModelBuilder builder)

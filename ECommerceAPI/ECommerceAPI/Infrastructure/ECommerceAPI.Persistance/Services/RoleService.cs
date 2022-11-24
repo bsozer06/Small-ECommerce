@@ -16,7 +16,7 @@ namespace ECommerceAPI.Persistance.Services
 
         public async Task<bool> CreateRoleAsync(string name)
         {
-            IdentityResult result = await _roleManager.CreateAsync(new AppRole() { Id=Guid.NewGuid().ToString(), Name = name });;
+            IdentityResult result = await _roleManager.CreateAsync(new AppRole() { Id=Guid.NewGuid().ToString(), Name = name });
             return result.Succeeded;
         }
 
@@ -30,7 +30,14 @@ namespace ECommerceAPI.Persistance.Services
         public (object, int) GetAllRoles(int page, int size)
         {
             var query = _roleManager.Roles;
-            return (query.Skip(page * size).Take(size).Select(r => new { r.Id, r.Name }), query.Count());
+            IQueryable<AppRole> queryRoles = null;
+
+            if (page != -1 && size != 1)
+                queryRoles = query.Skip(page * size).Take(size);
+            else
+                queryRoles = query;
+
+            return (queryRoles.Select(r => new { r.Id, r.Name }), query.Count());
         }
 
         public async Task<(string id, string name)> GetRoleByIdAsync(string id)

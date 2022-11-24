@@ -62,6 +62,13 @@ namespace ECommerceAPI.Persistance
 
             services.AddScoped<IRoleService, RoleService>();
 
+            services.AddScoped<IEndpointWriteRepository, EndpointWriteRepository>();
+            services.AddScoped<IEndpointReadRepository, EndpointReadRepository>();
+            services.AddScoped<IMenuReadRepository, MenuReadRepository>();
+            services.AddScoped<IMenuWriteRepository, MenuWriteRepository>();
+
+            services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
+
         }
     }
 }

@@ -8,7 +8,7 @@ import { AuthorizeMenuDialogComponent } from 'src/app/dialogs/authorize-menu-dia
 import { DialogService } from 'src/app/services/common/dialog.service';
 import { ApplicationService } from 'src/app/services/common/models/application.service';
 
- interface FoodNode {
+interface FoodNode {
   name: string;
   children?: FoodNode[];
 }
@@ -16,13 +16,14 @@ import { ApplicationService } from 'src/app/services/common/models/application.s
 interface ITreeMenu {
   name?: string,
   actions?: ITreeMenu[],
-  code?: string
+  code?: string,
+  menuName?: string
 }
 
 const TREE_DATA: ITreeMenu[] = [
   {
     name: 'Fruit',
-    actions: [{name: 'Apple'}, {name: 'Banana'}, {name: 'Fruit loops'}],
+    actions: [{ name: 'Apple' }, { name: 'Banana' }, { name: 'Fruit loops' }],
     code: ""
   },
   {
@@ -30,11 +31,11 @@ const TREE_DATA: ITreeMenu[] = [
     actions: [
       {
         name: 'Green',
-        actions: [{name: 'Broccoli'}, {name: 'Brussels sprouts'}],
+        actions: [{ name: 'Broccoli' }, { name: 'Brussels sprouts' }],
       },
       {
         name: 'Orange',
-        actions: [{name: 'Pumpkins'}, {name: 'Carrots'}],
+        actions: [{ name: 'Pumpkins' }, { name: 'Carrots' }],
       },
     ],
   },
@@ -57,9 +58,8 @@ interface ExampleFlatNode {
 export class AuthorizeMenuComponent extends BaseComponent implements OnInit {
 
   constructor(spinner: NgxSpinnerService,
-     private applicationService: ApplicationService,
-     private dialogService: DialogService)
-      {
+    private applicationService: ApplicationService,
+    private dialogService: DialogService) {
     super(spinner)
   }
 
@@ -70,7 +70,8 @@ export class AuthorizeMenuComponent extends BaseComponent implements OnInit {
         actions: m.actions.map(a => {
           const _treeMenu: ITreeMenu = {
             name: a.definition,
-            code: a.code
+            code: a.code,
+            menuName: m.name
           }
           return _treeMenu;
         })
@@ -91,7 +92,8 @@ export class AuthorizeMenuComponent extends BaseComponent implements OnInit {
         expandable: menu.actions?.length > 0,
         name: menu.name,
         level: level,
-        code: menu.code
+        code: menu.code,
+        menuName: menu.menuName
       }
     },
     menu => menu.level,
@@ -103,10 +105,10 @@ export class AuthorizeMenuComponent extends BaseComponent implements OnInit {
 
   hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
 
-  assignRole(code: string, name: string) {
+  assignRole(code: string, name: string, menuName: string) {
     this.dialogService.openDialog({
       componentType: AuthorizeMenuDialogComponent,
-      data: {code:code, name:name},
+      data: { code: code, name: name, menuName: menuName },
       options: {
         width: "750px"
       },
