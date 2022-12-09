@@ -27,7 +27,6 @@ export class AuthorizationEndpointService {
   }
 
   async getRolesToEndpoint(code: string, menu: string, successCallBack?:()=>void, errorCallBack?:(error)=>void) {
-    debugger;
     const observable: Observable<any> = this.httpClientService.post({
       controller:"AuthorizationEndpoints",
       actions:"GetRolesToEndpoint"
